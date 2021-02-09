@@ -1,0 +1,12 @@
+#:kivy 2.0.0
+
+<MyWidget>:
+    id: my_widget
+    FileChooserIconView:
+        id: filechooser
+        on_selection: my_widget.selected(filechooser.selection)
+        dirselect: True
+        path: my_widget.default_path()
+    Image:
+        id: image
+        source: ""
