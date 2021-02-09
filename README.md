@@ -2,9 +2,9 @@
 
 Tool for merging PDF files without sending them over the Network.
 
-## Build tool from source
+## Installation
 
-### Clone repository
+### From source
 
 ```
 git clone https://github.com/lukaszKielar/merge-pdfs.git
@@ -36,4 +36,15 @@ pip install -r requirements.txt
 
 ```
 pyinstaller --onefile --windowed merge_pdfs.py
+```
+
+## Development
+
+### Environment setup
+
+I'm using `pipenv` venv manager. In order to create proper env simply type
+
+```bash
+# adding --pre due to black version https://github.com/microsoft/vscode-python/issues/5171
+$ pipenv install --pre
 ```
