@@ -16,6 +16,7 @@ black = ">=20.8b1"
 kivy-examples = "~=2.0.0"
 ipykernel = "*"
 matplotlib = "*"
+rope = "*"
 
 [requires]
 python_version = "3.9"
