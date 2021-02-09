@@ -8,5 +8,6 @@
         "editor.formatOnSave": true
     },
     "python.formatting.blackPath": "C:\\Users\\Lukasz\\.virtualenvs\\merge-pdfs-0u-wNGtN/Scripts\\black.exe",
-    "python.formatting.provider": "black"
+    "python.formatting.provider": "black",
+    "autoDocstring.docstringFormat": "google"
 }
