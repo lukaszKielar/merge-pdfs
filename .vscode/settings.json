@@ -5,7 +5,8 @@
     "[python]": {
         "editor.tabSize": 4,
         "editor.insertSpaces": true,
-        "editor.formatOnSave": true
+        "editor.formatOnSave": true,
+        "editor.rulers": [79, 99]
     },
     "python.formatting.blackPath": "C:\\Users\\Lukasz\\.virtualenvs\\merge-pdfs-0u-wNGtN/Scripts\\black.exe",
     "python.formatting.provider": "black",
