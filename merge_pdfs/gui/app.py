@@ -1,5 +1,8 @@
 from pathlib import Path
 
+import kivy
+
+kivy.require("2.0.0")
 from kivy.app import App as KivyApp
 from kivy.uix.boxlayout import BoxLayout
 
@@ -10,7 +13,7 @@ from merge_pdfs.backend.previews import PreviewRenderer
 APP_DATA = AppData()
 
 
-class MyWidget(BoxLayout):
+class AppLayout(BoxLayout):
     def selected(self, path: str) -> None:
         _path = Path(path[0])
 
@@ -39,7 +42,7 @@ class MyWidget(BoxLayout):
 
 class App(KivyApp):
     def build(self):
-        return MyWidget()
+        return AppLayout()
 
 
 if __name__ == "__main__":
