@@ -4,7 +4,7 @@ import kivy
 
 kivy.require("2.0.0")
 from kivy.app import App as KivyApp
-from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.gridlayout import GridLayout
 
 from merge_pdfs.backend.app_data import AppData
 from merge_pdfs.backend.previews import PreviewRenderer
@@ -13,7 +13,7 @@ from merge_pdfs.backend.previews import PreviewRenderer
 APP_DATA = AppData()
 
 
-class AppLayout(BoxLayout):
+class AppLayout(GridLayout):
     def selected(self, path: str) -> None:
         _path = Path(path[0])
 
