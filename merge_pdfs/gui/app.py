@@ -1,24 +1,26 @@
 from pathlib import Path
 
 import kivy
-
-kivy.require("2.0.0")
 from kivy.app import App as KivyApp
-from kivy.uix.gridlayout import GridLayout
+from kivy.uix.boxlayout import BoxLayout
 
 from merge_pdfs.backend.app_data import AppData
 from merge_pdfs.backend.previews import PreviewRenderer
 
 
+kivy.require("2.0.0")
+
+
 APP_DATA = AppData()
 
 
-class AppLayout(GridLayout):
+class AppLayout(BoxLayout):
     def selected(self, path: str) -> None:
         _path = Path(path[0])
 
-        # skip if it's folder
+        # update address bar and skip if it's folder
         if _path.is_dir():
+            # self.ids.address_bar.text = path
             return
 
         _extension = _path.suffix.lower()
@@ -36,8 +38,14 @@ class AppLayout(GridLayout):
             except:
                 return
 
-    def default_path(self) -> Path:
+    def default_path(self) -> str:
         return str(Path.cwd())
+
+    def go_to(self, path: str) -> None:
+        if Path(path).exists():
+            self.ids.filechooser.path = path
+        else:
+            return
 
 
 class App(KivyApp):
