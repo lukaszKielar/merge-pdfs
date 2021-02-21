@@ -1,37 +1,41 @@
 #:kivy 2.0.0
 
 <AppLayout>:
-    orientation: "vertical"
+    orientation: "horizontal"
 
     BoxLayout:
-        orientation: "horizontal"
-        size_hint: (1, 0.05)
+        id: pdf_files
+        orientation: "vertical"
+        size_hint: (0.5, 1)
 
-        TextInput:
-            id: address_bar
-            size_hint: (0.9, 1)
-            text: filechooser.path
-            multiline: False
-
-        Button:
-            id: path_button
-            size_hint: (0.1, 1)
-            text: "Go to"
-            on_press: root.go_to(address_bar.text)
-    
     BoxLayout:
-        orientation: "horizontal"
-        size_hint: (1, 0.95)
-        
-        FileChooserListView:
-            id: filechooser
-            size_hint: (0.5, 1)
-            on_selection: root.selected(filechooser.selection)
-            dirselect: True
-            path: root.default_path()
-            filters: ["*.pdf", ".PDF", ".Pdf"]
+        orientation: "vertical"
+        size_hint: (0.5, 1)
         
         Image:
-            id: image
-            size_hint: (0.5, 1)
+            id: pdf_preview
+            size_hint: (1, 0.9)
             source: ""
+
+        BoxLayout:
+            orientation: "horizontal"
+            size_hint: (1, 0.1)
+            
+            Button:
+                id: previous_page
+                size_hint: (0.5, 1)
+
+                Image:
+                    source: "./images/previous.png"
+                    center_x: self.parent.center_x
+                    center_y: self.parent.center_y
+
+            Button:
+                id: next_page
+                size_hint: (0.5, 1)
+
+                Image:
+                    source: "./images/next.png"
+                    center_x: self.parent.center_x
+                    center_y: self.parent.center_y
+

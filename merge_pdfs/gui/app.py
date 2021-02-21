@@ -1,56 +1,55 @@
 from pathlib import Path
+from typing import List
 
 import kivy
 from kivy.app import App as KivyApp
+from kivy.core.window import Window
 from kivy.uix.boxlayout import BoxLayout
-
-from merge_pdfs.backend.app_data import AppData
-from merge_pdfs.backend.previews import PreviewRenderer
+from kivy.uix.label import Label
 
 
 kivy.require("2.0.0")
 
 
-APP_DATA = AppData()
-
-
 class AppLayout(BoxLayout):
-    def selected(self, path: str) -> None:
-        _path = Path(path[0])
-
-        # update address bar and skip if it's folder
-        if _path.is_dir():
-            # self.ids.address_bar.text = path
-            return
-
-        _extension = _path.suffix.lower()
-
-        if _extension == ".pdf":
-            preview_generator = PreviewRenderer(_path)
-            first_page_preview = preview_generator.render_preview(page=0)
-            self.ids.image.source = str(first_page_preview)
-            preview_generator.clean_up()
-        # show all files we can, including all image formats
-        else:
-            try:
-                self.ids.image.source = str(_path)
-            # skip when error
-            except:
-                return
-
-    def default_path(self) -> str:
-        return str(Path.cwd())
-
-    def go_to(self, path: str) -> None:
-        if Path(path).exists():
-            self.ids.filechooser.path = path
-        else:
-            return
+    pass
 
 
 class App(KivyApp):
+    _app_size = (800, 600)
+
+    _pdf_files: List[Path] = []
+
     def build(self):
-        return AppLayout()
+        self._app_layout = AppLayout()
+        Window.bind(on_dropfile=self._on_dropfile)
+        Window.size = self._app_size
+        return self._app_layout
+
+    def _on_dropfile(self, window: Window, file_path: bytes) -> None:
+        file_path = Path(file_path.decode("utf-8"))
+
+        # skip if it's not PDF
+        if file_path.suffix.lower() != ".pdf":
+            return
+
+        # skip if file is already added as a Label
+        if file_path in self._pdf_files:
+            return
+        # otherwise add to self._pdf_files
+        else:
+            self._pdf_files.append(file_path)
+
+        _label = Label(
+            text=Path(file_path).name,
+            halign="left",
+            valign="center",
+            text_size=((self._app_size[0] / 2) - 50, None),
+            max_lines=1,
+            shorten=True,
+        )
+
+        self._app_layout.ids.pdf_files.add_widget(_label)
 
 
 if __name__ == "__main__":
