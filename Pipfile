@@ -8,6 +8,7 @@ pypdf4 = "~=1.27.0"
 pyinstaller = ">=4.2"
 kivy = {extras = ["base"], version = "~=2.0.0"}
 pymupdf = "~=1.18.7"
+pyqt5 = "~=5.15.2"
 
 [dev-packages]
 pylint = ">=2.6.0"
@@ -17,6 +18,7 @@ kivy-examples = "~=2.0.0"
 ipykernel = "*"
 matplotlib = "*"
 rope = "*"
+pyqt5-tools = ">=5.15.2.1.0.1"
 
 [requires]
 python_version = "3.9"
