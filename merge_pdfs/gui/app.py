@@ -1,9 +1,9 @@
 import sys
 
+import qdarkstyle
 from PyQt5.QtCore import QRect, QSize, Qt
 from PyQt5.QtWidgets import (
     QAbstractItemView,
-    QAction,
     QApplication,
     QGridLayout,
     QListWidget,
@@ -11,47 +11,57 @@ from PyQt5.QtWidgets import (
     QMenu,
     QMenuBar,
     QPushButton,
-    QStatusBar,
     QWidget,
 )
 
+from merge_pdfs.backend.app_data import AppData
+
 from .actions import (
-    getAddAction,
-    getDarkModeAction,
-    getLightModeAction,
-    getRemoveAction,
-    getSaveAction,
+    getActionAdd,
+    getActionDarkMode,
+    getActionLightMode,
+    getActionRemove,
+    getActionSave,
 )
+
+
+APP_DATA = AppData()
 
 
 class Window(QMainWindow):
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
 
-        self._setupWindow()
-        self._defineActions()
-        self._setupMenuBar()
+        self._lightStyleSheet = self.styleSheet()
+        self._darkStyleSheet = qdarkstyle.load_stylesheet_pyqt5()
 
+        self._defineWindow()
+        self._defineActions()
+        self._defineMenuBar()
+        self._defineLayout()
+
+    def _defineLayout(self) -> None:
         # setup layout
         layout = QGridLayout()
 
         # define listView widget
-        listViewWidget = QListWidget()
-        listViewWidget.setObjectName(u"listViewWidget")
-        listViewWidget.setDragEnabled(True)
-        listViewWidget.setDragDropOverwriteMode(False)
-        listViewWidget.setDragDropMode(QAbstractItemView.InternalMove)
-        listViewWidget.addItem("Item1")
-        listViewWidget.addItem("Item2")
+        self.listViewWidget = QListWidget()
+        self.listViewWidget.setObjectName(u"listViewWidget")
+        self.listViewWidget.setDragEnabled(True)
+        self.listViewWidget.setDragDropOverwriteMode(False)
+        self.listViewWidget.setDragDropMode(QAbstractItemView.InternalMove)
+        self.listViewWidget.addItem("Item1")
+        self.listViewWidget.addItem("Item2")
 
         # define save button
-        buttonSave = QPushButton(text="Save")
-        buttonSave.setObjectName(u"buttonSave")
+        self.buttonSave = QPushButton(text="Save")
+        self.buttonSave.setObjectName(u"buttonSave")
+        self.buttonSave.pressed.connect(self.saveFiles)
 
         # define widgets
         widgets = [
-            (listViewWidget, 1, 0, 1, 2, Qt.AlignHCenter),
-            (buttonSave, 2, 1, 1, 1),
+            (self.listViewWidget, 1, 0, 1, 2, Qt.AlignHCenter),
+            (self.buttonSave, 2, 1, 1, 1),
         ]
 
         # add all widgets to the layout
@@ -66,32 +76,32 @@ class Window(QMainWindow):
         # to take up all the space in the window by default.
         self.setCentralWidget(centralWidget)
 
-    def _setupMenuBar(self) -> None:
+    def _defineMenuBar(self) -> None:
         menuBar = QMenuBar(self)
         menuBar.setGeometry(QRect(0, 0, 240, 21))
 
         # File menu
         fileMenu = QMenu("&File", self)
-        fileMenu.addAction(self.addAction)
-        fileMenu.addAction(self.removeAction)
+        fileMenu.addAction(self.actionAdd)
+        fileMenu.addAction(self.actionRemove)
         fileMenu.addSeparator()
-        fileMenu.addAction(self.saveAction)
+        fileMenu.addAction(self.actionSave)
         # add File menu to menu bar
         menuBar.addMenu(fileMenu)
 
-        # File menu
+        # Settings menu
         settingsMenu = QMenu("&Settings", self)
         modeMenu = QMenu("&Mode", self)
-        modeMenu.addAction(self.lightModeAction)
-        modeMenu.addAction(self.darkModeAction)
+        modeMenu.addAction(self.actionLightMode)
+        modeMenu.addAction(self.actionDarkMode)
         settingsMenu.addMenu(modeMenu)
-        # add File menu to menu bar
+        # add Settings menu to menu bar
         menuBar.addMenu(settingsMenu)
 
         # set menu bar for window
         self.setMenuBar(menuBar)
 
-    def _setupWindow(self) -> None:
+    def _defineWindow(self) -> None:
         self.setObjectName(u"MainWindow")
         self.setWindowTitle(u"MergePDFs")
         self.resize(240, 320)
@@ -100,141 +110,49 @@ class Window(QMainWindow):
         self.setAutoFillBackground(True)
 
     def _defineActions(self) -> None:
-        self.addAction = getAddAction(self)
-        self.removeAction = getRemoveAction(self)
-        self.saveAction = getSaveAction(self)
+        self.actionAdd = getActionAdd(self)
+        self.actionAdd.triggered.connect(self.addFile)
 
-        self.lightModeAction = getLightModeAction(self)
-        self.darkModeAction = getDarkModeAction(self)
+        self.actionRemove = getActionRemove(self)
+        self.actionRemove.triggered.connect(self.removeFile)
 
-    def setMode(self, mode: str = "light") -> None:
-        light_enabled = True if mode == "light" else False
+        self.actionSave = getActionSave(self)
+        self.actionSave.triggered.connect(self.saveFiles)
 
-        self.lightModeAction.setChecked(light_enabled)
-        self.darkModeAction.setChecked(not light_enabled)
+        self.actionLightMode = getActionLightMode(self)
+        self.actionLightMode.triggered.connect(lambda: self.setMode("light"))
 
-    # def setupUi(self, MainWindow):
-    #     if not MainWindow.objectName():
-    #         MainWindow.setObjectName(u"MainWindow")
-    #     MainWindow.resize(240, 320)
-    #     MainWindow.setMinimumSize(QSize(240, 320))
-    #     MainWindow.setMaximumSize(QSize(240, 320))
-    #     MainWindow.setWindowTitle(u"MergePDFs")
-    #     MainWindow.setAutoFillBackground(True)
+        self.actionDarkMode = getActionDarkMode(self)
+        self.actionDarkMode.triggered.connect(lambda: self.setMode("dark"))
 
-    #     # actions
-    #     self.actionAdd = QAction(MainWindow)
-    #     self.actionAdd.setObjectName(u"actionAdd")
-    #     self.actionRemove = QAction(MainWindow)
-    #     self.actionRemove.setObjectName(u"actionRemove")
-    #     self.actionLight = QAction(MainWindow)
-    #     self.actionLight.setObjectName(u"actionLight")
-    #     self.actionLight.setCheckable(True)
-    #     self.actionLight.setChecked(True)
-    #     self.actionDark = QAction(MainWindow)
-    #     self.actionDark.setObjectName(u"actionDark")
-    #     self.actionDark.setCheckable(True)
-    #     self.actionDark.setChecked(False)
-    #     self.actionSave = QAction(MainWindow)
-    #     self.actionSave.setObjectName(u"actionSave")
+        # read mode from APP_DATA
+        mode = APP_DATA.mode
+        if not mode or mode == "light":
+            self.setMode(mode="light")
+        else:
+            self.setMode(mode="dark")
 
-    #     self.centralwidget = QWidget(MainWindow)
-    #     self.centralwidget.setObjectName(u"centralwidget")
+    def setMode(self, mode: str) -> None:
+        if mode == "dark":
+            self.setStyleSheet(self._darkStyleSheet)
+            self.actionLightMode.setChecked(False)
+            self.actionDarkMode.setChecked(True)
+        else:
+            self.setStyleSheet(self._lightStyleSheet)
+            self.actionLightMode.setChecked(True)
+            self.actionDarkMode.setChecked(False)
 
-    #     self.gridLayout = QGridLayout(self.centralwidget)
-    #     self.gridLayout.setObjectName(u"gridLayout")
+        APP_DATA.save_setting("mode", mode)
 
-    #     self.listWidget = QListWidget(self.centralwidget)
-    #     QListWidgetItem(self.listWidget)
-    #     QListWidgetItem(self.listWidget)
-    #     self.listWidget.setObjectName(u"listWidget")
-    #     self.listWidget.setDragEnabled(True)
-    #     self.listWidget.setDragDropOverwriteMode(False)
-    #     self.listWidget.setDragDropMode(QAbstractItemView.InternalMove)
+    def saveFiles(self) -> None:
+        print("Save is not implemented yet!")
 
-    #     self.gridLayout.addWidget(self.listWidget, 1, 0, 1, 2, Qt.AlignHCenter)
+    def removeFile(self) -> None:
+        print("Remove is not implemented yet!")
 
-    #     self.pushButton = QPushButton(self.centralwidget)
-    #     self.pushButton.setObjectName(u"pushButton")
-
-    #     self.gridLayout.addWidget(self.pushButton, 2, 1, 1, 1)
-
-    #     MainWindow.setCentralWidget(self.centralwidget)
-
-    #     self.statusbar = QStatusBar(MainWindow)
-    #     self.statusbar.setObjectName(u"statusbar")
-    #     MainWindow.setStatusBar(self.statusbar)
-
-    #     self.menuBar = QMenuBar(MainWindow)
-    #     self.menuBar.setObjectName(u"menuBar")
-    #     self.menuBar.setGeometry(QRect(0, 0, 240, 21))
-    #     self.menuFile = QMenu(self.menuBar)
-    #     self.menuFile.setObjectName(u"menuFile")
-    #     self.menuSettings = QMenu(self.menuBar)
-    #     self.menuSettings.setObjectName(u"menuSettings")
-    #     self.menuMode = QMenu(self.menuSettings)
-    #     self.menuMode.setObjectName(u"menuMode")
-    #     MainWindow.setMenuBar(self.menuBar)
-
-    #     self.toolBar = QToolBar(MainWindow)
-    #     self.toolBar.setObjectName(u"toolBar")
-    #     self.toolBar.addAction(self.actionAdd)
-    #     self.toolBar.addAction(self.actionRemove)
-    #     self.toolBar.setMovable(False)
-    #     self.toolBar.setFloatable(False)
-    #     MainWindow.addToolBar(Qt.TopToolBarArea, self.toolBar)
-
-    #     self.menuBar.addAction(self.menuFile.menuAction())
-    #     self.menuBar.addAction(self.menuSettings.menuAction())
-    #     self.menuFile.addAction(self.actionAdd)
-    #     self.menuFile.addAction(self.actionRemove)
-    #     self.menuFile.addSeparator()
-    #     self.menuFile.addAction(self.actionSave)
-    #     self.menuSettings.addAction(self.menuMode.menuAction())
-    #     self.menuMode.addAction(self.actionLight)
-    #     self.menuMode.addAction(self.actionDark)
-
-    #     self.retranslateUi(MainWindow)
-
-    #     QMetaObject.connectSlotsByName(MainWindow)
-
-    # # setupUi
-
-    # def retranslateUi(self, MainWindow):
-    #     self.actionAdd.setText(QCoreApplication.translate("MainWindow", u"Add", None))
-    #     self.actionRemove.setText(
-    #         QCoreApplication.translate("MainWindow", u"Remove", None)
-    #     )
-    #     self.actionLight.setText(
-    #         QCoreApplication.translate("MainWindow", u"Light", None)
-    #     )
-    #     self.actionDark.setText(QCoreApplication.translate("MainWindow", u"Dark", None))
-    #     self.actionSave.setText(QCoreApplication.translate("MainWindow", u"Save", None))
-
-    #     __sortingEnabled = self.listWidget.isSortingEnabled()
-    #     self.listWidget.setSortingEnabled(False)
-    #     ___qlistwidgetitem = self.listWidget.item(0)
-    #     ___qlistwidgetitem.setText(
-    #         QCoreApplication.translate("MainWindow", u"Item 1", None)
-    #     )
-    #     ___qlistwidgetitem1 = self.listWidget.item(1)
-    #     ___qlistwidgetitem1.setText(
-    #         QCoreApplication.translate("MainWindow", u"Item 2", None)
-    #     )
-    #     self.listWidget.setSortingEnabled(__sortingEnabled)
-
-    #     self.pushButton.setText(QCoreApplication.translate("MainWindow", u"Save", None))
-    #     self.menuFile.setTitle(QCoreApplication.translate("MainWindow", u"File", None))
-    #     self.menuSettings.setTitle(
-    #         QCoreApplication.translate("MainWindow", u"Settings", None)
-    #     )
-    #     self.menuMode.setTitle(QCoreApplication.translate("MainWindow", u"Mode", None))
-    #     self.toolBar.setWindowTitle(
-    #         QCoreApplication.translate("MainWindow", u"toolBar", None)
-    #     )
-    #     pass
-
-    # # retranslateUi
+    def addFile(self) -> None:
+        print("Add is not implemented yet!")
+        # self.listViewWidget.addItem(item)
 
 
 if __name__ == "__main__":
