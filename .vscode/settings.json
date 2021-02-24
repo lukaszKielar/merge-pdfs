@@ -10,5 +10,6 @@
     },
     "python.formatting.blackPath": ".venv\\Scripts\\black.exe",
     "python.formatting.provider": "black",
-    "autoDocstring.docstringFormat": "google"
+    "autoDocstring.docstringFormat": "google",
+    "python.linting.mypyEnabled": true
 }
