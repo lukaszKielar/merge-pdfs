@@ -3,15 +3,14 @@ import sys
 import qdarkstyle
 from PyQt5.QtCore import QRect, QSize, Qt
 from PyQt5.QtWidgets import (
-    QAbstractItemView,
     QApplication,
-    QGridLayout,
-    QListWidget,
     QMainWindow,
     QMenu,
     QMenuBar,
     QPushButton,
+    QSizePolicy,
     QWidget,
+    QVBoxLayout,
 )
 
 from merge_pdfs.backend.app_data import AppData
@@ -23,6 +22,7 @@ from .actions import (
     getActionRemove,
     getActionSave,
 )
+from .widgets import PDFListWidget
 
 
 APP_DATA = AppData()
@@ -42,31 +42,33 @@ class Window(QMainWindow):
 
     def _defineLayout(self) -> None:
         # setup layout
-        layout = QGridLayout()
+        layout = QVBoxLayout()
 
         # define listView widget
-        self.listViewWidget = QListWidget()
-        self.listViewWidget.setObjectName(u"listViewWidget")
-        self.listViewWidget.setDragEnabled(True)
-        self.listViewWidget.setDragDropOverwriteMode(False)
-        self.listViewWidget.setDragDropMode(QAbstractItemView.InternalMove)
-        self.listViewWidget.addItem("Item1")
-        self.listViewWidget.addItem("Item2")
+        self.listViewWidget = PDFListWidget()
 
         # define save button
         self.buttonSave = QPushButton(text="Save")
         self.buttonSave.setObjectName(u"buttonSave")
         self.buttonSave.pressed.connect(self.saveFiles)
+        sizePolicy = QSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.buttonSave.sizePolicy().hasHeightForWidth())
+        self.buttonSave.setSizePolicy(sizePolicy)
 
         # define widgets
-        widgets = [
-            (self.listViewWidget, 1, 0, 1, 2, Qt.AlignHCenter),
-            (self.buttonSave, 2, 1, 1, 1),
-        ]
+        widgets = (
+            (self.listViewWidget, None),
+            (self.buttonSave, (0, Qt.AlignRight | Qt.AlignVCenter)),
+        )
 
         # add all widgets to the layout
-        for w in widgets:
-            layout.addWidget(w[0], *w[1:])
+        for widget, settings in widgets:
+            if settings:
+                layout.addWidget(widget, *settings)
+            else:
+                layout.addWidget(widget)
 
         # create central widget
         centralWidget = QWidget()
@@ -104,9 +106,9 @@ class Window(QMainWindow):
     def _defineWindow(self) -> None:
         self.setObjectName(u"MainWindow")
         self.setWindowTitle(u"MergePDFs")
-        self.resize(240, 320)
-        self.setMinimumSize(QSize(240, 320))
-        self.setMaximumSize(QSize(240, 320))
+        self.resize(640, 320)
+        self.setMinimumSize(QSize(640, 320))
+        self.setMaximumSize(QSize(640, 320))
         self.setAutoFillBackground(True)
 
     def _defineActions(self) -> None:
