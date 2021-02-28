@@ -2,15 +2,6 @@ from PyQt5.QtGui import QWindow
 from PyQt5.QtWidgets import QAction
 
 
-class ActionDarkMode(QAction):
-    def __init__(self, *args, **kwargs) -> None:
-        super().__init__(*args, **kwargs)
-        self.objectName = u"actionDarkMode"
-        self.isCheckable = True
-        self.isChecked = False
-        self.shortcut = "Ctrl+D"
-
-
 def getActionAdd(window: QWindow) -> QAction:
     addAction = QAction("Add", window)
     addAction.setShortcut("Ctrl+A")
