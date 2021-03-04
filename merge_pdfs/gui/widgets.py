@@ -1,6 +1,9 @@
+from pathlib import Path
+from typing import Dict, List
+
 from PyQt5 import QtGui
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QAbstractItemView, QListWidget
+from PyQt5.QtWidgets import QAbstractItemView, QListWidget, QListWidgetItem
 
 
 class PDFListWidget(QListWidget):
@@ -13,6 +16,9 @@ class PDFListWidget(QListWidget):
         self.setDragDropOverwriteMode(False)
         self.setDragDropMode(QAbstractItemView.InternalMove)
         self.setAlternatingRowColors(True)
+        self.setSelectionMode(QAbstractItemView.ContiguousSelection)
+
+        self._addedFiles: Dict[str, Path] = {}
 
     def dragEnterEvent(self, e: QtGui.QDragEnterEvent) -> None:
         if e.mimeData().hasUrls:
@@ -35,16 +41,34 @@ class PDFListWidget(QListWidget):
             if mimeData.hasUrls:
                 event.accept()
 
-                files = []
+                newFiles = []
 
                 for url in mimeData.urls():
                     if url.isLocalFile():
-                        files.append(str(url.toLocalFile()))
+                        # convert url to Path
+                        _newFilePath = Path(url.toLocalFile())
+                        # check if path is present in already existed files
+                        if _newFilePath.name not in self._addedFiles:
+                            self._addedFiles[_newFilePath.name] = _newFilePath
+                            newFiles.append(_newFilePath.name)
 
-                self.addItems(files)
+                self.addItems(newFiles)
             else:
                 event.ignore()
 
         # otherwise ignore action
         else:
             event.ignore()
+
+    def _removeItem(self, item: QListWidgetItem):
+        itemText = item.text()
+        # not really needed, because we took it from the QWidgetList,
+        # but who cares (we want to be safe as almighty Java people)
+        if itemText in self._addedFiles:
+            del self._addedFiles[itemText]
+            self.takeItem(self.row(item))
+
+    def removeItems(self):
+        selectedItems = self.selectedItems()
+        for item in selectedItems:
+            self._removeItem(item)

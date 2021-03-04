@@ -14,6 +14,7 @@ from PyQt5.QtWidgets import (
 )
 
 from merge_pdfs.backend.app_data import AppData
+from merge_pdfs.backend.utils import not_implemented
 
 from .actions import (
     getActionAdd,
@@ -146,14 +147,16 @@ class Window(QMainWindow):
 
         APP_DATA.save_setting("mode", mode)
 
+    @not_implemented
     def saveFiles(self) -> None:
-        print("Save is not implemented yet!")
+        pass
 
     def removeFile(self) -> None:
-        print("Remove is not implemented yet!")
+        self.listViewWidget.removeItems()
 
+    @not_implemented
     def addFile(self) -> None:
-        print("Add is not implemented yet!")
+        pass
         # self.listViewWidget.addItem(item)
 
 
