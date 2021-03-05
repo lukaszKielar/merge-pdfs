@@ -18,7 +18,7 @@ class AppLogger:
         logger.setLevel(logging.DEBUG)
 
         formatter = logging.Formatter(
-            fmt="%(asctime)s - %(levelname)8s - %(message)s",
+            fmt="%(asctime)s | %(levelname)8s | %(message)60s | %(filename)s:%(lineno)d at %(name)s",
             datefmt="%Y-%m-%d %H:%M:%S",
         )
 
@@ -30,9 +30,7 @@ class AppLogger:
         queue_handler = QueueHandler(queue)
         logger.addHandler(queue_handler)
 
-        listener = logging.handlers.QueueListener(
-            queue, *[stdout_handler], respect_handler_level=True
-        )
+        listener = QueueListener(queue, *[stdout_handler], respect_handler_level=True)
 
         listener.start()
 
