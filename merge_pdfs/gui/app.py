@@ -117,7 +117,7 @@ class Window(QMainWindow):
         self.actionAdd.triggered.connect(self.listViewWidget.addItemsFromDialog)
 
         self.actionRemove = getActionRemove(self)
-        self.actionRemove.triggered.connect(self.listViewWidget.removeItems)
+        self.actionRemove.triggered.connect(self.listViewWidget.removeSelectedItems)
 
         self.actionSave = getActionSave(self)
         self.actionSave.triggered.connect(self.listViewWidget.saveFile)
@@ -150,7 +150,11 @@ class Window(QMainWindow):
 
 
 if __name__ == "__main__":
-    app = QApplication([])
-    window = Window()
-    window.show()
-    sys.exit(app.exec())
+    try:
+        app = QApplication([])
+        window = Window()
+        window.show()
+        sys.exit(app.exec())
+    except Exception:
+        logger.exception("Application failed")
+        sys.exit(1)

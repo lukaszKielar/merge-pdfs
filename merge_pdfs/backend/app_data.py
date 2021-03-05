@@ -50,8 +50,8 @@ class AppData:
         logger.debug('Saving {"%s":"%s"} setting into settings file', attr, value)
         self._settings[attr] = value
 
-        with open(self._settings_file, "w") as f:
-            json.dump(self._settings, f, indent=2)
+        with open(self._settings_file, "w") as fd:
+            json.dump(self._settings, fd, indent=2)
 
 
 APP_DATA = AppData()

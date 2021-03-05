@@ -48,19 +48,10 @@ class PDFListWidget(QListWidget):
             if mimeData.hasUrls:
                 event.accept()
 
-                newFiles = []
-
                 for url in mimeData.urls():
                     if url.isLocalFile():
-                        # convert url to Path
-                        _newFilePath = Path(url.toLocalFile())
-                        # check if path is present in already existed files
-                        if _newFilePath.name not in self._addedFiles:
-                            self._addedFiles[_newFilePath.name] = _newFilePath
-                            newFiles.append(_newFilePath.name)
+                        self._addItem(url.toLocalFile())
 
-                self.addItems(newFiles)
-                logger.debug(self._addedFiles)
             else:
                 event.ignore()
 
@@ -70,14 +61,16 @@ class PDFListWidget(QListWidget):
 
     def _removeItem(self, item: QListWidgetItem):
         itemText = item.text()
+        logger.debug("Removing '%s' from the list", itemText)
         # not really needed, because we took it from the QWidgetList,
         # but who cares (we want to be safe as almighty Java people)
         if itemText in self._addedFiles:
             del self._addedFiles[itemText]
             self.takeItem(self.row(item))
 
-    def removeItems(self):
+    def removeSelectedItems(self):
         selectedItems = self.selectedItems()
+        logger.debug("Files to be removed from the list: %d", len(selectedItems))
         for item in selectedItems:
             self._removeItem(item)
 
@@ -86,11 +79,11 @@ class PDFListWidget(QListWidget):
         itemText = itemPath.name
 
         if itemText not in self._addedFiles:
-            logger.debug("Adding %s to the list", itemText)
+            logger.debug("Adding '%s' to the list", itemText)
             self._addedFiles[itemText] = itemPath
             self.addItem(itemText)
         else:
-            logger.warning("Ignoring %s. Already on a list", itemText)
+            logger.warning("Ignoring '%s', already on the list", itemText)
 
     def addItemsFromDialog(self):
         if APP_DATA.lastOpenedDir is None:
@@ -110,7 +103,6 @@ class PDFListWidget(QListWidget):
             # save lastOpenedDir in settings file
             APP_DATA.save_setting("lastOpenedDir", str(Path(selectedFiles[0]).parent))
 
-            logger.debug("%d files will be added", len(selectedFiles))
             for _file in selectedFiles:
                 self._addItem(_file)
 
