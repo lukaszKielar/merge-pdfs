@@ -18,5 +18,5 @@ pipenv install --pre
 ## Building process
 
 ```bash
-pyinstaller --onefile --windowed merge_pdfs.py
+pyinstaller --noconsole --onefile --windowed --name MergePDFs .\merge_pdfs\gui\app.py
 ```
