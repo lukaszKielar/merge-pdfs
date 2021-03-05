@@ -4,10 +4,17 @@ from typing import Dict
 
 from PyQt5 import QtGui
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QAbstractItemView, QFileDialog, QListWidget, QListWidgetItem
+from PyQt5.QtWidgets import (
+    QAbstractItemView,
+    QFileDialog,
+    QListWidget,
+    QListWidgetItem,
+    QMessageBox,
+)
+from merge_pdfs.backend import pdf_writer
 
 from merge_pdfs.backend.app_data import APP_DATA
-from merge_pdfs.backend.utils import not_implemented
+from merge_pdfs.backend.pdf_writer import PDFWriter
 
 logger = logging.getLogger(__name__)
 
@@ -16,7 +23,7 @@ class PDFListWidget(QListWidget):
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
 
-        self.setObjectName(u"listViewWidget")
+        self.setObjectName("listViewWidget")
         self.setDragEnabled(True)
         self.setAcceptDrops(True)
         self.setDragDropOverwriteMode(False)
@@ -86,10 +93,7 @@ class PDFListWidget(QListWidget):
             logger.warning("Ignoring '%s', already on the list", itemText)
 
     def addItemsFromDialog(self):
-        if APP_DATA.lastOpenedDir is None:
-            openDir = str(Path.home())
-        else:
-            openDir = APP_DATA.lastOpenedDir
+        openDir = str(APP_DATA.getLastDir())
 
         selectedFiles, _ = QFileDialog.getOpenFileNames(
             self,
@@ -101,11 +105,34 @@ class PDFListWidget(QListWidget):
 
         if selectedFiles:
             # save lastOpenedDir in settings file
-            APP_DATA.save_setting("lastOpenedDir", str(Path(selectedFiles[0]).parent))
+            APP_DATA.save_setting("lastDir", str(Path(selectedFiles[0]).parent))
 
             for _file in selectedFiles:
                 self._addItem(_file)
 
-    @not_implemented
     def saveFile(self):
-        pass
+        # ignore if no files were added
+        if not self._addedFiles:
+            logger.debug("Ignoring save action due to empty list")
+            return
+
+        openDir = str(APP_DATA.getLastDir())
+        newFile, _ = QFileDialog.getSaveFileName(
+            self,
+            "Save file",
+            openDir,
+            "PDF files (*.pdf *.PDF *.Pdf)",
+            options=QFileDialog.DontUseNativeDialog,
+        )
+
+        # skip if file name was not specified or cancel button was pressed
+        if not newFile:
+            return
+
+        pdfWriter = PDFWriter()
+        pdfWriter.merge_files(*self._addedFiles.values())
+        pdfWriter.save(newFile)
+
+        QMessageBox.information(
+            self, "MergePDFs", f"File {newFile} was successfully saved", QMessageBox.Ok
+        )
