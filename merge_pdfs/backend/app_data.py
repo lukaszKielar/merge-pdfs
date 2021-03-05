@@ -1,8 +1,11 @@
 import os
 import json
+import logging
 import platform
 from pathlib import Path
 from typing import Any, Dict, Optional
+
+logger = logging.getLogger(__name__)
 
 
 class AppData:
@@ -36,7 +39,7 @@ class AppData:
         return self._path / "settings.json"
 
     def _load_settings(self) -> Dict[str, Any]:
-
+        logger.debug("Reading settings file: %s", self._settings_file)
         if not self._settings_file.exists():
             return {}
 
@@ -44,7 +47,11 @@ class AppData:
             return json.load(f)
 
     def save_setting(self, attr: str, value: Any) -> None:
+        logger.debug('Saving {"%s":"%s"} setting into settings file', attr, value)
         self._settings[attr] = value
 
         with open(self._settings_file, "w") as f:
             json.dump(self._settings, f, indent=2)
+
+
+APP_DATA = AppData()
