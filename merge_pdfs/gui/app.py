@@ -50,7 +50,7 @@ class Window(QMainWindow):
 
         # define save button
         self.buttonSave = QPushButton(text="Save")
-        self.buttonSave.setObjectName(u"buttonSave")
+        self.buttonSave.setObjectName("buttonSave")
         self.buttonSave.pressed.connect(self.listViewWidget.saveFile)
         sizePolicy = QSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
@@ -105,8 +105,8 @@ class Window(QMainWindow):
         self.setMenuBar(menuBar)
 
     def _defineWindow(self) -> None:
-        self.setObjectName(u"MainWindow")
-        self.setWindowTitle(u"MergePDFs")
+        self.setObjectName("MainWindow")
+        self.setWindowTitle("MergePDFs")
         self.resize(640, 320)
         self.setMinimumSize(QSize(640, 320))
         self.setMaximumSize(QSize(640, 320))
@@ -156,5 +156,7 @@ if __name__ == "__main__":
         window.show()
         sys.exit(app.exec())
     except Exception:
+        # TODO print message box with exception and
+        #  button that allows to copy the content of the message
         logger.exception("Application failed")
         sys.exit(1)
