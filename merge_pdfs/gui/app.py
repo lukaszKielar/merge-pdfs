@@ -14,6 +14,7 @@ from PyQt5.QtWidgets import (
 )
 
 from merge_pdfs.backend.app_data import AppData
+from merge_pdfs.backend.logger import AppLogger
 from merge_pdfs.backend.utils import not_implemented
 
 from .actions import (
@@ -24,6 +25,9 @@ from .actions import (
     getActionSave,
 )
 from .widgets import PDFListWidget
+
+
+logger = AppLogger.default()
 
 
 APP_DATA = AppData()
@@ -136,6 +140,7 @@ class Window(QMainWindow):
             self.setMode(mode="dark")
 
     def setMode(self, mode: str) -> None:
+        logger.debug("Setting %s mode", mode)
         if mode == "dark":
             self.setStyleSheet(self._darkStyleSheet)
             self.actionLightMode.setChecked(False)
