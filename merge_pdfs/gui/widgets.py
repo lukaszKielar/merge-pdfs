@@ -11,7 +11,6 @@ from PyQt5.QtWidgets import (
     QListWidgetItem,
     QMessageBox,
 )
-from merge_pdfs.backend import pdf_writer
 
 from merge_pdfs.backend.app_data import APP_DATA
 from merge_pdfs.backend.pdf_writer import PDFWriter

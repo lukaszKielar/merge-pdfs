@@ -15,15 +15,14 @@ from PyQt5.QtWidgets import (
 
 from merge_pdfs.backend.app_data import APP_DATA
 from merge_pdfs.backend.logger import AppLogger
-
-from .actions import (
+from merge_pdfs.gui.actions import (
     getActionAdd,
     getActionDarkMode,
     getActionLightMode,
     getActionRemove,
     getActionSave,
 )
-from .widgets import PDFListWidget
+from merge_pdfs.gui.widgets import PDFListWidget
 
 
 logger = AppLogger.default()
