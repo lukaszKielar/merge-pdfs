@@ -1,9 +1,12 @@
+import logging
 from functools import wraps
+
+logger = logging.getLogger(__name__)
 
 
 def not_implemented(func):
     @wraps(func)
-    def inner():
-        print(f"{func.__name__} is not implemented yet!")
+    def inner(*args, **kwargs):
+        logger.warning("%s is not implemented yet!", func.__name__)
 
     return inner
