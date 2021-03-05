@@ -53,5 +53,10 @@ class AppData:
         with open(self._settings_file, "w") as fd:
             json.dump(self._settings, fd, indent=2)
 
+    def getLastDir(self) -> Path:
+        if self.lastDir:
+            return self.lastDir
+        return str(Path.home())
+
 
 APP_DATA = AppData()
