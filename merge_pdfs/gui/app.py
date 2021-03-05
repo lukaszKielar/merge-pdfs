@@ -13,9 +13,8 @@ from PyQt5.QtWidgets import (
     QVBoxLayout,
 )
 
-from merge_pdfs.backend.app_data import AppData
+from merge_pdfs.backend.app_data import APP_DATA
 from merge_pdfs.backend.logger import AppLogger
-from merge_pdfs.backend.utils import not_implemented
 
 from .actions import (
     getActionAdd,
@@ -30,9 +29,6 @@ from .widgets import PDFListWidget
 logger = AppLogger.default()
 
 
-APP_DATA = AppData()
-
-
 class Window(QMainWindow):
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
@@ -41,9 +37,9 @@ class Window(QMainWindow):
         self._darkStyleSheet = qdarkstyle.load_stylesheet_pyqt5()
 
         self._defineWindow()
+        self._defineLayout()
         self._defineActions()
         self._defineMenuBar()
-        self._defineLayout()
 
     def _defineLayout(self) -> None:
         # setup layout
@@ -55,7 +51,7 @@ class Window(QMainWindow):
         # define save button
         self.buttonSave = QPushButton(text="Save")
         self.buttonSave.setObjectName(u"buttonSave")
-        self.buttonSave.pressed.connect(self.saveFiles)
+        self.buttonSave.pressed.connect(self.listViewWidget.saveFile)
         sizePolicy = QSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -118,13 +114,13 @@ class Window(QMainWindow):
 
     def _defineActions(self) -> None:
         self.actionAdd = getActionAdd(self)
-        self.actionAdd.triggered.connect(self.addFile)
+        self.actionAdd.triggered.connect(self.listViewWidget.addItemsFromDialog)
 
         self.actionRemove = getActionRemove(self)
-        self.actionRemove.triggered.connect(self.removeFile)
+        self.actionRemove.triggered.connect(self.listViewWidget.removeItems)
 
         self.actionSave = getActionSave(self)
-        self.actionSave.triggered.connect(self.saveFiles)
+        self.actionSave.triggered.connect(self.listViewWidget.saveFile)
 
         self.actionLightMode = getActionLightMode(self)
         self.actionLightMode.triggered.connect(lambda: self.setMode("light"))
@@ -151,18 +147,6 @@ class Window(QMainWindow):
             self.actionDarkMode.setChecked(False)
 
         APP_DATA.save_setting("mode", mode)
-
-    @not_implemented
-    def saveFiles(self) -> None:
-        pass
-
-    def removeFile(self) -> None:
-        self.listViewWidget.removeItems()
-
-    @not_implemented
-    def addFile(self) -> None:
-        pass
-        # self.listViewWidget.addItem(item)
 
 
 if __name__ == "__main__":
