@@ -47,10 +47,22 @@ class AppData:
             return json.load(f)
 
     def save_setting(self, attr: str, value: Any) -> None:
-        logger.debug('Saving {"%s":"%s"} setting into settings file', attr, value)
+
+        oldValue = self._settings.get(attr)
+
+        # if there is old value check if it's different than passed attr and value
+        # return when values are the same
+        if oldValue:
+            if oldValue == value:
+                logger.debug(
+                    "Ignoring, setting '%s' already has value of '%s'", attr, value
+                )
+                return
+
         self._settings[attr] = value
 
         with open(self._settings_file, "w") as fd:
+            logger.debug('Saving {"%s":"%s"} setting into settings file', attr, value)
             json.dump(self._settings, fd, indent=2)
 
     def getLastDir(self) -> Path:
