@@ -1,12 +1,15 @@
 {
-    "python.pythonPath": "C:\\Users\\Lukasz\\.virtualenvs\\merge-pdfs-0u-wNGtN\\Scripts\\python.exe",
-    "python.linting.pylintPath": "C:\\Users\\Lukasz\\.virtualenvs\\merge-pdfs-0u-wNGtN/Scripts\\pylint.exe",
-    "python.linting.mypyPath": "C:\\Users\\Lukasz\\.virtualenvs\\merge-pdfs-0u-wNGtN/Scripts\\mypy.exe",
+    "python.pythonPath": ".venv\\Scripts\\python.exe",
+    "python.linting.pylintPath": ".venv\\Scripts\\pylint.exe",
+    "python.linting.mypyPath": ".venv\\Scripts\\mypy.exe",
     "[python]": {
         "editor.tabSize": 4,
         "editor.insertSpaces": true,
-        "editor.formatOnSave": true
+        "editor.formatOnSave": true,
+        "editor.rulers": [79, 99]
     },
-    "python.formatting.blackPath": "C:\\Users\\Lukasz\\.virtualenvs\\merge-pdfs-0u-wNGtN/Scripts\\black.exe",
-    "python.formatting.provider": "black"
+    "python.formatting.blackPath": ".venv\\Scripts\\black.exe",
+    "python.formatting.provider": "black",
+    "autoDocstring.docstringFormat": "google",
+    "python.linting.mypyEnabled": true
 }

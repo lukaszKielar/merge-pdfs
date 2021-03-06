@@ -1,39 +1,22 @@
 # merge-pdfs
 
-Tool for merging PDF files without sending them over the Network.
+Simple Python tool for merging PDF files on a local machine.
 
-## Build tool from source
+## Development
 
-### Clone repository
+`pipenv` venv manager could be used to install all required dependencies for the project.
 
-```
-git clone https://github.com/lukaszKielar/merge-pdfs.git
+```bash
+git clone git@github.com:lukaszKielar/merge-pdfs.git
 cd merge-pdfs
+
+python -m venv ./.venv
+
+# adding --pre due to black version https://github.com/microsoft/vscode-python/issues/5171
+pipenv install --pre
 ```
+## Building process
 
-### Create virtual environment
-
-#### Windows
-
-```
-virtualenv venv
-venv\Scripts\activate.bat
-pip install -r requirements.txt
-```
-
-#### Linux
-
-Linux users have to install `python3-dev` in order to build the tool.
-
-```
-sudo apt-get install python3.6-dev
-virtualenv -p python3.6 venv
-source ./venv/bin/activate
-pip install -r requirements.txt
-```
-
-### Build tool
-
-```
-pyinstaller --onefile --windowed merge_pdfs.py
+```bash
+pyinstaller --noconsole --onefile --windowed --name MergePDFs .\merge_pdfs\gui\app.py
 ```
