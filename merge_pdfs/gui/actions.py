@@ -5,7 +5,7 @@ from PyQt5.QtWidgets import QAction, QApplication, QStyle
 def getActionAdd(window: QWindow) -> QAction:
     icon = QApplication.style().standardIcon(QStyle.SP_DialogOpenButton)
     addAction = QAction(icon, "Add", window)
-    addAction.setShortcut("Ctrl+A")
+    addAction.setShortcut("Ctrl++")
     return addAction
 
 

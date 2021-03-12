@@ -49,29 +49,7 @@ class Window(QMainWindow):
 
         # define listView widget
         self.listViewWidget = PDFListWidget()
-
-        # define save button
-        self.buttonSave = QPushButton(text="Save")
-        self.buttonSave.setObjectName("buttonSave")
-        self.buttonSave.pressed.connect(self.listViewWidget.saveFile)
-        sizePolicy = QSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.buttonSave.sizePolicy().hasHeightForWidth())
-        self.buttonSave.setSizePolicy(sizePolicy)
-
-        # define widgets
-        widgets = (
-            (self.listViewWidget, None),
-            (self.buttonSave, (0, Qt.AlignRight | Qt.AlignVCenter)),
-        )
-
-        # add all widgets to the layout
-        for widget, settings in widgets:
-            if settings:
-                layout.addWidget(widget, *settings)
-            else:
-                layout.addWidget(widget)
+        layout.addWidget(self.listViewWidget)
 
         # create central widget
         centralWidget = QWidget()
