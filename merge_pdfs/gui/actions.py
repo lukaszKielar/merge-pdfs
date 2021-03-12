@@ -16,6 +16,12 @@ def getActionRemove(window: QWindow) -> QAction:
     return removeAction
 
 
+def getActionRemoveAll(window: QWindow) -> QAction:
+    icon = QApplication.style().standardIcon(QStyle.SP_DialogResetButton)
+    removeAllAction = QAction(icon, "Remove all", window)
+    return removeAllAction
+
+
 def getActionSave(window: QWindow) -> QAction:
     icon = QApplication.style().standardIcon(QStyle.SP_DialogSaveButton)
     saveAction = QAction(icon, "Save", window)
