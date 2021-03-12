@@ -21,6 +21,7 @@ from merge_pdfs.gui.actions import (
     getActionDarkMode,
     getActionLightMode,
     getActionRemove,
+    getActionRemoveAll,
     getActionSave,
 )
 from merge_pdfs.gui.widgets import PDFListWidget
@@ -89,6 +90,8 @@ class Window(QMainWindow):
         fileMenu.addAction(self.actionAdd)
         fileMenu.addAction(self.actionRemove)
         fileMenu.addSeparator()
+        fileMenu.addAction(self.actionRemoveAll)
+        fileMenu.addSeparator()
         fileMenu.addAction(self.actionSave)
         # add File menu to menu bar
         menuBar.addMenu(fileMenu)
@@ -119,6 +122,9 @@ class Window(QMainWindow):
 
         self.actionRemove = getActionRemove(self)
         self.actionRemove.triggered.connect(self.listViewWidget.removeSelectedItems)
+
+        self.actionRemoveAll = getActionRemoveAll(self)
+        self.actionRemoveAll.triggered.connect(self.listViewWidget.removeAllItems)
 
         self.actionSave = getActionSave(self)
         self.actionSave.triggered.connect(self.listViewWidget.saveFile)
@@ -156,6 +162,8 @@ class Window(QMainWindow):
         # add actions
         toolBar.addAction(self.actionAdd)
         toolBar.addAction(self.actionRemove)
+        toolBar.addSeparator()
+        toolBar.addAction(self.actionRemoveAll)
         toolBar.addSeparator()
         toolBar.addAction(self.actionSave)
 

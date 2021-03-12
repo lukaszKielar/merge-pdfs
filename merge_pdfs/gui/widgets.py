@@ -80,6 +80,19 @@ class PDFListWidget(QListWidget):
         for item in selectedItems:
             self._removeItem(item)
 
+    # TODO it should present a pop up asking if user is sure
+    def removeAllItems(self):
+        allItems = self.count()
+        logger.debug("All files to be removed from the list: %d", allItems)
+
+        # remove all items
+        while self.count():
+            item = self.takeItem(0)
+            self._removeItem(item)
+
+        # reset _addedFiles dict
+        self._addedFiles = {}
+
     def _addItem(self, item: str):
         itemPath = Path(item)
         itemText = itemPath.name
