@@ -1,21 +1,24 @@
 from PyQt5.QtGui import QWindow
-from PyQt5.QtWidgets import QAction
+from PyQt5.QtWidgets import QAction, QApplication, QStyle
 
 
 def getActionAdd(window: QWindow) -> QAction:
-    addAction = QAction("Add", window)
+    icon = QApplication.style().standardIcon(QStyle.SP_DialogOpenButton)
+    addAction = QAction(icon, "Add", window)
     addAction.setShortcut("Ctrl+A")
     return addAction
 
 
 def getActionRemove(window: QWindow) -> QAction:
-    removeAction = QAction("Remove", window)
+    icon = QApplication.style().standardIcon(QStyle.SP_DialogCancelButton)
+    removeAction = QAction(icon, "Remove", window)
     removeAction.setShortcut("Del")
     return removeAction
 
 
 def getActionSave(window: QWindow) -> QAction:
-    saveAction = QAction("Save", window)
+    icon = QApplication.style().standardIcon(QStyle.SP_DialogSaveButton)
+    saveAction = QAction(icon, "Save", window)
     saveAction.setShortcut("Ctrl+S")
     return saveAction
 

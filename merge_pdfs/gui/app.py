@@ -9,6 +9,7 @@ from PyQt5.QtWidgets import (
     QMenuBar,
     QPushButton,
     QSizePolicy,
+    QToolBar,
     QWidget,
     QVBoxLayout,
 )
@@ -39,6 +40,7 @@ class Window(QMainWindow):
         self._defineLayout()
         self._defineActions()
         self._defineMenuBar()
+        self._defineToolBar()
 
     def _defineLayout(self) -> None:
         # setup layout
@@ -146,6 +148,18 @@ class Window(QMainWindow):
             self.actionDarkMode.setChecked(False)
 
         APP_DATA.save_setting("mode", mode)
+
+    def _defineToolBar(self) -> None:
+        toolBar = QToolBar(self)
+        toolBar.setMovable(False)
+
+        # add actions
+        toolBar.addAction(self.actionAdd)
+        toolBar.addAction(self.actionRemove)
+        toolBar.addSeparator()
+        toolBar.addAction(self.actionSave)
+
+        self.addToolBar(toolBar)
 
 
 if __name__ == "__main__":
