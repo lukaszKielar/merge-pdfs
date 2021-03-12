@@ -28,7 +28,7 @@ class PDFListWidget(QListWidget):
         self.setDragDropOverwriteMode(False)
         self.setDragDropMode(QAbstractItemView.InternalMove)
         self.setAlternatingRowColors(True)
-        self.setSelectionMode(QAbstractItemView.ContiguousSelection)
+        self.setSelectionMode(QAbstractItemView.ExtendedSelection)
 
         # dict that maps item label with its paths
         self._addedFiles: Dict[str, Path] = {}
