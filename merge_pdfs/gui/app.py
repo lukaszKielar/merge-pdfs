@@ -1,17 +1,15 @@
 import sys
 
 import qdarkstyle
-from PyQt5.QtCore import QRect, QSize, Qt
+from PyQt5.QtCore import QRect, QSize
 from PyQt5.QtWidgets import (
     QApplication,
     QMainWindow,
     QMenu,
     QMenuBar,
-    QPushButton,
-    QSizePolicy,
     QToolBar,
-    QWidget,
     QVBoxLayout,
+    QWidget,
 )
 
 from merge_pdfs.backend.app_data import APP_DATA
@@ -25,7 +23,6 @@ from merge_pdfs.gui.actions import (
     getActionSave,
 )
 from merge_pdfs.gui.widgets import PDFListWidget
-
 
 logger = AppLogger.default()
 
