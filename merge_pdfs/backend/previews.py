@@ -1,13 +1,14 @@
 import io
-import PIL.Image as Image
 import shutil
 import tempfile
 from pathlib import Path
-from typing import Union, Dict
+from typing import Dict, Union
 
-import fitz
+# import fitz
+import PIL.Image as Image
 
 
+# FIXME: fitz library is not installed at the moment
 class PreviewRenderer:
     """Class that generates pdf previews.
 

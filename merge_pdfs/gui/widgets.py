@@ -111,7 +111,7 @@ class PDFListWidget(QListWidget):
             self,
             "Add file(s)",
             openDir,
-            "PDF files (*.pdf *.PDF *.Pdf)",
+            "PDF Files (*.pdf);;Images (*.png *.jpg)",
             options=QFileDialog.DontUseNativeDialog,
         )
 
@@ -133,7 +133,7 @@ class PDFListWidget(QListWidget):
             self,
             "Save file",
             openDir,
-            "PDF files (*.pdf *.PDF *.Pdf)",
+            "PDF files (*.pdf)",
             options=QFileDialog.DontUseNativeDialog,
         )
 
