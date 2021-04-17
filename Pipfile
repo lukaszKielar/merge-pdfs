@@ -5,7 +5,6 @@ name = "pypi"
 
 [packages]
 pypdf4 = "~=1.27.0"
-pyinstaller = ">=4.2"
 pyqt5 = "~=5.15.2"
 qdarkstyle = "~=2.8.1"
 pillow = "~=8.2.0"
@@ -16,6 +15,7 @@ mypy = ">=0.800"
 black = ">=20.8b1"
 rope = "*"
 isort = "*"
+cx-freeze = "*"
 
 [requires]
 python_version = "3.8"
