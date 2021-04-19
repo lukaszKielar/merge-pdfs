@@ -141,8 +141,13 @@ class PDFListWidget(QListWidget):
         if not newFile:
             return
 
+        # make sure files will be saved in correct order
+        # save as they appear in the UI
+        orderedKeys = [self.item(item).text() for item in range(self.count())]
+        orteredValues = [self._addedFiles[key] for key in orderedKeys]
+
         pdfWriter = PDFWriter()
-        pdfWriter.merge_files(*self._addedFiles.values())
+        pdfWriter.merge_files(*orteredValues)
         pdfWriter.save(newFile)
 
         QMessageBox.information(
