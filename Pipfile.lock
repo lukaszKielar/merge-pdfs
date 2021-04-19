@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "e36cc469f19d8fc7e1a332458cbe0a7a6b6b763e4f53bf8f6804b809f39e3c3d"
+            "sha256": "a1a8b24c45162ffa760cbaea1d3b124f924dafb7ceaa423956deb1e38950c2d5"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -16,13 +16,6 @@
         ]
     },
     "default": {
-        "helpdev": {
-            "hashes": [
-                "sha256:779a761b18c2d96fb181aa699609f802347806125f2fee2f60dad875a625e38e",
-                "sha256:bb62a79acbac141dadf42cadeb92bb7450dd18b9824a62043b6a0b149190db3d"
-            ],
-            "version": "==0.7.1"
-        },
         "pillow": {
             "hashes": [
                 "sha256:01425106e4e8cee195a411f729cff2a7d61813b0b11737c12bd5991f5f14bcd5",
@@ -118,11 +111,11 @@
         },
         "qdarkstyle": {
             "hashes": [
-                "sha256:7cead57817a8a1f38b48d76ef38986b6cc397d0315c0dd0431fcd06749556947",
-                "sha256:d53b0120bddd9e3efba9801731e22ef86ed798bb5fc6a802f5f7bb32dedf0321"
+                "sha256:55d149cf5f40ee297397f1818e091118cefb855a4a9c5c38566c47acd2d8c7ae",
+                "sha256:7c791535cc20b3cc1e8e1bf6b88dabe53cb0615983df702be83597e73ada2558"
             ],
             "index": "pypi",
-            "version": "==2.8.1"
+            "version": "==3.0.2"
         },
         "qtpy": {
             "hashes": [
@@ -207,11 +200,11 @@
         },
         "importlib-metadata": {
             "hashes": [
-                "sha256:2ec0faae539743ae6aaa84b49a169670a465f7f5d64e6add98388cc29fd1f2f6",
-                "sha256:c9356b657de65c53744046fa8f7358afe0714a1af7d570c00c3835c2d724a7c1"
+                "sha256:19192b88d959336bfa6bdaaaef99aeafec179eca19c47c804e555703ee5f07ef",
+                "sha256:2e881981c9748d7282b374b68e759c87745c25427b67ecf0cc67fb6637a1bff9"
             ],
             "markers": "python_version >= '3.6'",
-            "version": "==3.10.1"
+            "version": "==4.0.0"
         },
         "isort": {
             "hashes": [
@@ -354,10 +347,10 @@
         },
         "rope": {
             "hashes": [
-                "sha256:786b5c38c530d4846aa68a42604f61b4e69a493390e3ca11b88df0fbfdc3ed04"
+                "sha256:64e6d747532e1f5c8009ec5aae3e5523a5bcedf516f39a750d57d8ed749d90da"
             ],
             "index": "pypi",
-            "version": "==0.18.0"
+            "version": "==0.19.0"
         },
         "toml": {
             "hashes": [
