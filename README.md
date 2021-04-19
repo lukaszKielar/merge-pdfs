@@ -12,20 +12,17 @@ cd merge-pdfs
 python -m venv ./.venv
 pipenv install --dev
 ```
+
 ## Building process
 
-### pyinstaller
+### Create installer
 
 ```bash
-pyinstaller --noconsole --onefile --windowed --name MergePDFs .\merge_pdfs\gui\app.py
+python setup.py bdist_msi
 ```
 
-### cx freeze
+### Create executable
 
 ```bash
-# create installer
-python setup.py bdist_msi
-
-# create executable
 python setup.py build
 ```
