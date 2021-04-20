@@ -9,14 +9,20 @@ Simple Python tool for merging PDF files on a local machine.
 ```bash
 git clone git@github.com:lukaszKielar/merge-pdfs.git
 cd merge-pdfs
-
 python -m venv ./.venv
-
-# adding --pre due to black version https://github.com/microsoft/vscode-python/issues/5171
-pipenv install --pre
+pipenv install --dev
 ```
+
 ## Building process
 
+### Create installer
+
 ```bash
-pyinstaller --noconsole --onefile --windowed --name MergePDFs .\merge_pdfs\gui\app.py
+python setup.py bdist_msi
+```
+
+### Create executable
+
+```bash
+python setup.py build
 ```
