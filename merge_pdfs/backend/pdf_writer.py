@@ -35,10 +35,11 @@ class PDFWriter:
                 self._merger.append(f)
 
     def save(self, out_path: Union[str, Path]) -> Path:
-        logger.debug("Saving '%s' file", out_path)
         # add extension if doesn't exist
         if not str(out_path).lower().endswith(".pdf"):
             out_path += ".pdf"
+
+        logger.debug("Saving '%s' file", out_path)
 
         with open(out_path, "wb") as fd:
             self._merger.write(fd)
