@@ -4,7 +4,7 @@ import sys
 import PyQt5
 from cx_Freeze import Executable, setup
 
-base = "Win32GUI" if sys.version == "win32" else None
+base = "Win32GUI" if sys.platform == "win32" else None
 include_files = [
     os.path.join(os.path.dirname(PyQt5.__file__), "Qt5", "plugins"),
     "c:\windows\syswow64\MSVCR100.dll",
