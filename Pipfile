@@ -4,10 +4,10 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-pypdf4 = "*"
-pyqt5 = "*"
-qdarkstyle = "*"
-pillow = "*"
+pypdf4 = "==1.27.0"
+pyqt5 = "==5.15.6"
+qdarkstyle = "==3.0.3"
+pillow = "==8.4.0"
 
 [dev-packages]
 pylint = "*"
@@ -15,7 +15,7 @@ mypy = "*"
 black = "*"
 rope = "*"
 isort = "*"
-cx-freeze = "*"
+cx-freeze = "==6.9"
 
 [requires]
 python_version = "3.8"
