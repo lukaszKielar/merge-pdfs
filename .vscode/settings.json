@@ -1,20 +1,16 @@
 {
   "[python]": {
     "editor.codeActionsOnSave": {
-      "source.organizeImports": true
+      "source.fixAll": "explicit",
+      "source.organizeImports": "explicit"
     },
+    "editor.defaultFormatter": "ms-python.black-formatter",
     "editor.formatOnSave": true,
     "editor.insertSpaces": true,
-    "editor.rulers": [79, 99],
+    "editor.rulers": [
+      79,
+      99
+    ],
     "editor.tabSize": 4
-  },
-  "autoDocstring.docstringFormat": "google",
-  "python.formatting.blackPath": ".venv\\Scripts\\black.exe",
-  "python.formatting.provider": "black",
-  "python.linting.mypyEnabled": true,
-  "python.linting.mypyPath": ".venv\\Scripts\\mypy.exe",
-  "python.linting.pylintPath": ".venv\\Scripts\\pylint.exe",
-  "python.pythonPath": ".venv\\Scripts\\python.exe",
-  "python.sortImports.path": "isort.exe",
-  "python.sortImports.args": ["--src=${workspaceFolder}"]
+  }
 }
