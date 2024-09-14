@@ -1,0 +1,19 @@
+{
+    "name": "merge-pdfs",
+    "image": "mcr.microsoft.com/devcontainers/python:1-3.12-bookworm",
+    "features": {
+        "ghcr.io/devcontainers-contrib/features/poetry:2": {}
+    },
+    "postCreateCommand": "poetry install",
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "charliermarsh.ruff",
+                "esbenp.prettier-vscode",
+                "ms-python.mypy-type-checker",
+                "tamasfe.even-better-toml"
+            ]
+        }
+    },
+    "remoteUser": "root"
+}

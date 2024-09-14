@@ -1,7 +1,9 @@
+from __future__ import annotations
+
 import logging
 import sys
 from logging.handlers import QueueHandler, QueueListener
-from queue import SimpleQueue
+from queue import Queue
 
 
 class AppLogger:
@@ -18,7 +20,7 @@ class AppLogger:
         logger.setLevel(logging.DEBUG)
 
         formatter = logging.Formatter(
-            fmt="%(asctime)s | %(levelname)8s | %(message)60s | %(filename)s:%(lineno)d at %(name)s",
+            fmt="%(asctime)s | %(levelname)8s | %(message)60s | %(filename)s:%(lineno)d at %(name)s",  # noqa: E501
             datefmt="%Y-%m-%d %H:%M:%S",
         )
 
@@ -26,11 +28,15 @@ class AppLogger:
         stdout_handler.setLevel(logging.DEBUG)
         stdout_handler.setFormatter(formatter)
 
-        queue = SimpleQueue()
+        queue = Queue()
         queue_handler = QueueHandler(queue)
         logger.addHandler(queue_handler)
 
-        listener = QueueListener(queue, *[stdout_handler], respect_handler_level=True)
+        listener = QueueListener(
+            queue,
+            *[stdout_handler],
+            respect_handler_level=True,
+        )
 
         listener.start()
 

@@ -1,10 +1,11 @@
+from __future__ import annotations
+
 import logging
 from pathlib import Path
-from typing import Dict
 
-from PyQt5 import QtGui
-from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import (
+from PySide6.QtCore import Qt
+from PySide6.QtGui import QDragEnterEvent, QDropEvent
+from PySide6.QtWidgets import (
     QAbstractItemView,
     QFileDialog,
     QListWidget,
@@ -12,46 +13,49 @@ from PyQt5.QtWidgets import (
     QMessageBox,
 )
 
-from merge_pdfs.backend.app_data import APP_DATA
-from merge_pdfs.backend.pdf_writer import PDFWriter
+from merge_pdfs.app_data import APP_DATA
+from merge_pdfs.pdf_writer import PDFWriter
 
 logger = logging.getLogger(__name__)
 
 
 class PDFListWidget(QListWidget):
-    def __init__(self, *args, **kwargs) -> None:
-        super().__init__(*args, **kwargs)
+    def __init__(self) -> None:
+        super().__init__()
 
         self.setObjectName("listViewWidget")
         self.setDragEnabled(True)
         self.setAcceptDrops(True)
         self.setDragDropOverwriteMode(False)
-        self.setDragDropMode(QAbstractItemView.InternalMove)
+        self.setDragDropMode(QAbstractItemView.DragDropMode.InternalMove)
         self.setAlternatingRowColors(True)
-        self.setSelectionMode(QAbstractItemView.ExtendedSelection)
+        self.setSelectionMode(
+            QAbstractItemView.SelectionMode.ExtendedSelection
+        )
 
         # dict that maps item label with its paths
-        self._addedFiles: Dict[str, Path] = {}
+        self._addedFiles: dict[str, Path] = {}
 
-    def dragEnterEvent(self, e: QtGui.QDragEnterEvent) -> None:
-        if e.mimeData().hasUrls:
+    def dragEnterEvent(self, e: QDragEnterEvent) -> None:
+        logger.debug("DragEnterEvent %s", e)
+        if e.mimeData().hasUrls():
             e.accept()
         else:
             e.ignore()
 
-    def dropEvent(self, event: QtGui.QDropEvent) -> None:
+    def dropEvent(self, event: QDropEvent) -> None:
         # check drop action
         dropAction = event.dropAction()
 
         # if action is MoveAction use parent behavior
         # it basically means we want to change order of existing items
-        if dropAction == Qt.MoveAction:
+        if dropAction == Qt.DropAction.MoveAction:
             super().dropEvent(event)
 
         # if action is CopyAction we are dropping local files to QListWidget
-        elif dropAction == Qt.CopyAction:
+        elif dropAction == Qt.DropAction.CopyAction:
             mimeData = event.mimeData()
-            if mimeData.hasUrls:
+            if mimeData.hasUrls():
                 event.accept()
 
                 for url in mimeData.urls():
@@ -65,25 +69,22 @@ class PDFListWidget(QListWidget):
         else:
             event.ignore()
 
-    def _removeItem(self, item: QListWidgetItem):
+    def _removeItem(self, item: QListWidgetItem) -> None:
         itemText = item.text()
-        logger.debug("Removing '%s' from the list", itemText)
-        # not really needed, because we took it from the QWidgetList,
-        # but who cares (we want to be safe as almighty Java people)
+        logger.debug("Removing [%s] item from the list", itemText)
         if itemText in self._addedFiles:
             del self._addedFiles[itemText]
             self.takeItem(self.row(item))
 
-    def removeSelectedItems(self):
+    def removeSelectedItems(self) -> None:
         selectedItems = self.selectedItems()
-        logger.debug("Files to be removed from the list: %d", len(selectedItems))
+        logger.debug("Removing [%d] files from the list", len(selectedItems))
         for item in selectedItems:
             self._removeItem(item)
 
-    # TODO it should present a pop up asking if user is sure
-    def removeAllItems(self):
-        allItems = self.count()
-        logger.debug("All files to be removed from the list: %d", allItems)
+    # TODO: add pop up asking if the user is sure
+    def removeAllItems(self) -> None:
+        logger.debug("Removing all [%d] files from the list", self.count())
 
         # remove all items
         while self.count():
@@ -93,48 +94,54 @@ class PDFListWidget(QListWidget):
         # reset _addedFiles dict
         self._addedFiles = {}
 
-    def _addItem(self, item: str):
+    def _addItem(self, item: str) -> None:
         itemPath = Path(item)
         itemText = itemPath.name
 
         if itemText not in self._addedFiles:
-            logger.debug("Adding '%s' to the list", itemText)
+            logger.debug("Adding [%s] file to the list", itemText)
             self._addedFiles[itemText] = itemPath
             self.addItem(itemText)
-        else:
-            logger.warning("Ignoring '%s', already on the list", itemText)
 
-    def addItemsFromDialog(self):
-        openDir = str(APP_DATA.getLastDir())
+    def addItemsFromDialog(self) -> None:
+        dir = APP_DATA.getSetting(setting="last_dir")
+        if not dir:
+            dir = str(Path.home())
 
         selectedFiles, _ = QFileDialog.getOpenFileNames(
             self,
-            "Add file(s)",
-            openDir,
-            "PDF Files (*.pdf);;Images (*.png *.jpg *.jpeg)",
-            options=QFileDialog.DontUseNativeDialog,
+            caption="Add file(s)",
+            dir=dir,
+            filter="PDF Files (*.pdf);;Images (*.png *.jpg *.jpeg)",
+            options=QFileDialog.Option.DontUseNativeDialog,
         )
 
         if selectedFiles:
             # save lastOpenedDir in settings file
-            APP_DATA.save_setting("lastDir", str(Path(selectedFiles[0]).parent))
+            APP_DATA.updateSetting(
+                setting="last_dir",
+                value=str(Path(selectedFiles[0]).parent),
+            )
 
             for _file in selectedFiles:
                 self._addItem(_file)
 
-    def saveFile(self):
+    def saveFile(self) -> None:
         # ignore if no files were added
         if not self._addedFiles:
-            logger.debug("Ignoring save action due to empty list")
+            logger.warning("Nothing to be saved")
             return
 
-        openDir = str(APP_DATA.getLastDir())
+        dir = APP_DATA.getSetting(setting="last_dir")
+        if not dir:
+            dir = str(Path.home())
+
         newFile, _ = QFileDialog.getSaveFileName(
             self,
-            "Save file",
-            openDir,
-            "PDF files (*.pdf)",
-            options=QFileDialog.DontUseNativeDialog,
+            caption="Save file",
+            dir=dir,
+            filter="PDF files (*.pdf)",
+            options=QFileDialog.Option.DontUseNativeDialog,
         )
 
         # skip if file name was not specified or cancel button was pressed
@@ -146,10 +153,10 @@ class PDFListWidget(QListWidget):
         orderedKeys = [self.item(item).text() for item in range(self.count())]
         orteredValues = [self._addedFiles[key] for key in orderedKeys]
 
-        pdfWriter = PDFWriter()
-        pdfWriter.merge_files(*orteredValues)
-        pdfWriter.save(newFile)
+        PDFWriter().write(path=Path(newFile), files=orteredValues)
 
         QMessageBox.information(
-            self, "MergePDFs", f"File {newFile} was successfully saved", QMessageBox.Ok
+            self,
+            "MergePDFs",
+            f"File {newFile} was successfully saved",
         )

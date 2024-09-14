@@ -1,28 +1,26 @@
 # merge-pdfs
 
-Simple Python tool for merging PDF files on a local machine.
+Simple Python tool for merging PDF files locally.
+
+In order to run the app type:
+
+```bash
+python merge_pdfs/main.py
+```
 
 ## Development
 
-`pipenv` venv manager could be used to install all required dependencies for the project.
+Prerequisites:
+
+- pyenv
+- pyenv-virtualenv
+- poetry
 
 ```bash
 git clone git@github.com:lukaszKielar/merge-pdfs.git
 cd merge-pdfs
-python -m venv ./.venv
-pipenv install --dev
-```
-
-## Building process
-
-### Create installer
-
-```bash
-python setup.py bdist_msi
-```
-
-### Create executable
-
-```bash
-python setup.py build
+pyenv install 3.12
+pyenv virtualenv 3.12 merge-pdfs
+pyenv local merge-pdfs
+poetry install
 ```
