@@ -1,45 +1,56 @@
-from PyQt5.QtGui import QWindow
-from PyQt5.QtWidgets import QAction, QApplication, QStyle
+from __future__ import annotations
+
+from PySide6.QtCore import QObject
+from PySide6.QtGui import QAction
+from PySide6.QtWidgets import QApplication, QStyle
 
 
-def getActionAdd(window: QWindow) -> QAction:
-    icon = QApplication.style().standardIcon(QStyle.SP_DialogOpenButton)
-    addAction = QAction(icon, "Add", window)
-    addAction.setShortcut("Ctrl++")
-    return addAction
+def getActionAdd(qObject: QObject) -> QAction:
+    icon = QApplication.style().standardIcon(
+        QStyle.StandardPixmap.SP_DialogOpenButton
+    )
+    qAction = QAction(icon, "Add", qObject)
+    qAction.setShortcut("Ctrl++")
+    return qAction
 
 
-def getActionRemove(window: QWindow) -> QAction:
-    icon = QApplication.style().standardIcon(QStyle.SP_DialogCancelButton)
-    removeAction = QAction(icon, "Remove", window)
-    removeAction.setShortcut("Del")
-    return removeAction
+def getActionRemove(qObject: QObject) -> QAction:
+    icon = QApplication.style().standardIcon(
+        QStyle.StandardPixmap.SP_DialogCancelButton
+    )
+    qAction = QAction(icon, "Remove", qObject)
+    qAction.setShortcut("Del")
+    return qAction
 
 
-def getActionRemoveAll(window: QWindow) -> QAction:
-    icon = QApplication.style().standardIcon(QStyle.SP_DialogResetButton)
-    removeAllAction = QAction(icon, "Remove all", window)
-    return removeAllAction
+def getActionRemoveAll(qObject: QObject) -> QAction:
+    icon = QApplication.style().standardIcon(
+        QStyle.StandardPixmap.SP_DialogResetButton
+    )
+    qAction = QAction(icon, "Remove all", qObject)
+    return qAction
 
 
-def getActionSave(window: QWindow) -> QAction:
-    icon = QApplication.style().standardIcon(QStyle.SP_DialogSaveButton)
-    saveAction = QAction(icon, "Save", window)
-    saveAction.setShortcut("Ctrl+S")
-    return saveAction
+def getActionSave(qObject: QObject) -> QAction:
+    icon = QApplication.style().standardIcon(
+        QStyle.StandardPixmap.SP_DialogSaveButton
+    )
+    qAction = QAction(icon, "Save", qObject)
+    qAction.setShortcut("Ctrl+S")
+    return qAction
 
 
-def getActionLightMode(window: QWindow) -> QAction:
-    lightModeAction = QAction("Light", window)
-    lightModeAction.setShortcut("Ctrl+L")
-    lightModeAction.setCheckable(True)
-    lightModeAction.setChecked(True)
-    return lightModeAction
+def getActionLightMode(qObject: QObject) -> QAction:
+    qAction = QAction("Light", qObject)
+    qAction.setShortcut("Ctrl+L")
+    qAction.setCheckable(True)
+    qAction.setChecked(True)
+    return qAction
 
 
-def getActionDarkMode(window: QWindow) -> QAction:
-    darkModeAction = QAction("Dark", window)
-    darkModeAction.setShortcut("Ctrl+D")
-    darkModeAction.setCheckable(True)
-    darkModeAction.setChecked(False)
-    return darkModeAction
+def getActionDarkMode(qObject: QObject) -> QAction:
+    qAction = QAction("Dark", qObject)
+    qAction.setShortcut("Ctrl+D")
+    qAction.setCheckable(True)
+    qAction.setChecked(False)
+    return qAction

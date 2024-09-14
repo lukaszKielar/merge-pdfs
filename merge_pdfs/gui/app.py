@@ -1,52 +1,55 @@
-import sys
+from __future__ import annotations
+
+import logging
+from enum import Enum
 
 import qdarkstyle
-from PyQt5.QtCore import QRect, QSize
-from PyQt5.QtWidgets import (
-    QApplication,
-    QMainWindow,
-    QMenu,
-    QMenuBar,
-    QToolBar,
-    QVBoxLayout,
-    QWidget,
-)
+from PySide6.QtCore import QRect, QSize
+from PySide6.QtWidgets import (QMainWindow, QMenu, QMenuBar, QToolBar,
+                               QVBoxLayout, QWidget)
 
-from merge_pdfs.backend.app_data import APP_DATA
-from merge_pdfs.backend.logger import AppLogger
-from merge_pdfs.gui.actions import (
-    getActionAdd,
-    getActionDarkMode,
-    getActionLightMode,
-    getActionRemove,
-    getActionRemoveAll,
-    getActionSave,
-)
+from merge_pdfs.app_data import APP_DATA
+from merge_pdfs.gui.actions import (getActionAdd, getActionDarkMode,
+                                    getActionLightMode, getActionRemove,
+                                    getActionRemoveAll, getActionSave)
 from merge_pdfs.gui.widgets import PDFListWidget
 
-logger = AppLogger.default()
+logger = logging.getLogger(__name__)
 
 
-class Window(QMainWindow):
-    def __init__(self, *args, **kwargs) -> None:
-        super().__init__(*args, **kwargs)
+class AppMode(str, Enum):
+    LIGHT = "light"
+    DARK = "dark"
+
+
+class App(QMainWindow):
+    def __init__(self) -> None:
+        super().__init__()
 
         self._lightStyleSheet = self.styleSheet()
-        self._darkStyleSheet = qdarkstyle.load_stylesheet_pyqt5()
+        self._darkStyleSheet = qdarkstyle.load_stylesheet_pyside6()
 
+        self._pdfListWidget = PDFListWidget()
+
+        # order matters!!
         self._defineWindow()
         self._defineLayout()
-        self._defineActions()
+        self._define_actions()
         self._defineMenuBar()
         self._defineToolBar()
+
+    def _defineWindow(self) -> None:
+        self.setObjectName("MainWindow")
+        self.setWindowTitle("MergePDFs")
+        self.resize(640, 320)
+        self.setMinimumSize(QSize(640, 320))
+        self.setMaximumSize(QSize(640, 320))
+        self.setAutoFillBackground(True)
 
     def _defineLayout(self) -> None:
         # setup layout
         layout = QVBoxLayout()
-
-        # define listView widget
-        self.listViewWidget = PDFListWidget()
-        layout.addWidget(self.listViewWidget)
+        layout.addWidget(self._pdfListWidget)
 
         # create central widget
         centralWidget = QWidget()
@@ -55,6 +58,42 @@ class Window(QMainWindow):
         # set the central widget of the Window. Widget will expand
         # to take up all the space in the window by default.
         self.setCentralWidget(centralWidget)
+
+    def _define_actions(self) -> None:
+        self.actionAdd = getActionAdd(self)
+        self.actionAdd.triggered.connect(
+            self._pdfListWidget.addItemsFromDialog
+        )
+
+        self.actionRemove = getActionRemove(self)
+        self.actionRemove.triggered.connect(
+            self._pdfListWidget.removeSelectedItems
+        )
+
+        self.actionRemoveAll = getActionRemoveAll(self)
+        self.actionRemoveAll.triggered.connect(
+            self._pdfListWidget.removeAllItems
+        )
+
+        self.actionSave = getActionSave(self)
+        self.actionSave.triggered.connect(self._pdfListWidget.saveFile)
+
+        self.actionLightMode = getActionLightMode(self)
+        self.actionLightMode.triggered.connect(
+            lambda: self._setMode(AppMode.LIGHT)
+        )
+
+        self.actionDarkMode = getActionDarkMode(self)
+        self.actionDarkMode.triggered.connect(
+            lambda: self._setMode(AppMode.DARK)
+        )
+
+        # read mode from APP_DATA
+        mode = APP_DATA.getSetting(setting="mode")
+        if not mode or mode == "light":
+            self._setMode(mode=AppMode.LIGHT)
+        else:
+            self._setMode(mode=AppMode.DARK)
 
     def _defineMenuBar(self) -> None:
         menuBar = QMenuBar(self)
@@ -83,53 +122,6 @@ class Window(QMainWindow):
         # set menu bar for window
         self.setMenuBar(menuBar)
 
-    def _defineWindow(self) -> None:
-        self.setObjectName("MainWindow")
-        self.setWindowTitle("MergePDFs")
-        self.resize(640, 320)
-        self.setMinimumSize(QSize(640, 320))
-        self.setMaximumSize(QSize(640, 320))
-        self.setAutoFillBackground(True)
-
-    def _defineActions(self) -> None:
-        self.actionAdd = getActionAdd(self)
-        self.actionAdd.triggered.connect(self.listViewWidget.addItemsFromDialog)
-
-        self.actionRemove = getActionRemove(self)
-        self.actionRemove.triggered.connect(self.listViewWidget.removeSelectedItems)
-
-        self.actionRemoveAll = getActionRemoveAll(self)
-        self.actionRemoveAll.triggered.connect(self.listViewWidget.removeAllItems)
-
-        self.actionSave = getActionSave(self)
-        self.actionSave.triggered.connect(self.listViewWidget.saveFile)
-
-        self.actionLightMode = getActionLightMode(self)
-        self.actionLightMode.triggered.connect(lambda: self.setMode("light"))
-
-        self.actionDarkMode = getActionDarkMode(self)
-        self.actionDarkMode.triggered.connect(lambda: self.setMode("dark"))
-
-        # read mode from APP_DATA
-        mode = APP_DATA.mode
-        if not mode or mode == "light":
-            self.setMode(mode="light")
-        else:
-            self.setMode(mode="dark")
-
-    def setMode(self, mode: str) -> None:
-        logger.debug("Setting %s mode", mode)
-        if mode == "dark":
-            self.setStyleSheet(self._darkStyleSheet)
-            self.actionLightMode.setChecked(False)
-            self.actionDarkMode.setChecked(True)
-        else:
-            self.setStyleSheet(self._lightStyleSheet)
-            self.actionLightMode.setChecked(True)
-            self.actionDarkMode.setChecked(False)
-
-        APP_DATA.save_setting("mode", mode)
-
     def _defineToolBar(self) -> None:
         toolBar = QToolBar(self)
         toolBar.setMovable(False)
@@ -144,15 +136,15 @@ class Window(QMainWindow):
 
         self.addToolBar(toolBar)
 
+    def _setMode(self, mode: AppMode) -> None:
+        logger.debug("Setting %s mode", mode)
+        if mode.value == "dark":
+            self.setStyleSheet(self._darkStyleSheet)
+            self.actionLightMode.setChecked(False)
+            self.actionDarkMode.setChecked(True)
+        else:
+            self.setStyleSheet(self._lightStyleSheet)
+            self.actionLightMode.setChecked(True)
+            self.actionDarkMode.setChecked(False)
 
-if __name__ == "__main__":
-    try:
-        app = QApplication([])
-        window = Window()
-        window.show()
-        sys.exit(app.exec())
-    except Exception:
-        # TODO print message box with exception and
-        #  button that allows to copy the content of the message
-        logger.exception("Application failed")
-        sys.exit(1)
+        APP_DATA.updateSetting("mode", mode.value)
