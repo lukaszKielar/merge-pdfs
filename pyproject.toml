@@ -8,13 +8,49 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = ">=3.12,<3.13"
-pillow = "^10.1.0"
-pypdf = "^3.17.3"
-pyside6 = "^6.6.1"
+pillow = "^10.4.0"
+pymupdf = "^1.24.10"
+pypdf = "^4.3.1"
+pyside6 = "^6.7.2"
 qdarkstyle = "^3.2.3"
 
 [tool.poetry.group.dev.dependencies]
+isort = "^5.13.2"
+mypy = "^1.11.2"
+ruff = "^0.6.5"
 
+[tool.ruff]
+indent-width = 4
+line-length = 79
+target-version = "py312"
+
+[tool.ruff.format]
+docstring-code-format = true
+docstring-code-line-length = "dynamic"
+skip-magic-trailing-comma = false
+
+[tool.ruff.lint]
+select = [
+    "F",   # pyflakes
+    "E",   # pycodestyle errors
+    "W",   # pycodestyle warnings
+    "I",   # isort
+    "RUF", # ruff-specific rules
+]
+extend-select = []
+ignore = []
+
+[tool.ruff.lint.isort]
+known-first-party = ["merge_pdfs"]
+required-imports = ["from __future__ import annotations"]
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+
+[[tool.mypy.overrides]]
+module = "qdarkstyle.*"
+ignore_missing_imports = true
 
 [build-system]
 requires = ["poetry-core"]

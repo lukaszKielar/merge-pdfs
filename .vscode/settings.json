@@ -1,16 +1,20 @@
 {
-  "[python]": {
-    "editor.codeActionsOnSave": {
-      "source.fixAll": "explicit",
-      "source.organizeImports": "explicit"
+    "[jsonc]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode",
+        "editor.formatOnSave": true
     },
-    "editor.defaultFormatter": "ms-python.black-formatter",
-    "editor.formatOnSave": true,
-    "editor.insertSpaces": true,
-    "editor.rulers": [
-      79,
-      99
-    ],
-    "editor.tabSize": 4
-  }
+    "[python]": {
+        "editor.codeActionsOnSave": {
+            "source.fixAll": "explicit",
+            "source.organizeImports": "explicit"
+        },
+        "editor.defaultFormatter": "charliermarsh.ruff",
+        "editor.formatOnSave": true,
+        "editor.insertSpaces": true,
+        "editor.rulers": [79, 99]
+    },
+    "[toml]": {
+        "editor.formatOnSave": true
+    },
+    "ruff.enable": true
 }
